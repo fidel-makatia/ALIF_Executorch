@@ -1,0 +1,7 @@
+r
+h
+loadfile out/executorch_mnist/E8-HE/debug/executorch_mnist.elf
+SetPC 0x80000000
+w4 0xE000ED08 0x80000000
+g
+exit

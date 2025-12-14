@@ -1,0 +1,7 @@
+r
+h
+loadfile out/blinky/E8-HE/debug/blinky.elf
+SetPC 0x800007C0
+w4 0xE000ED08 0x80000000
+g
+exit

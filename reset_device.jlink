@@ -1,0 +1,6 @@
+si swd
+speed 4000
+device M55_HE
+r
+g
+exit

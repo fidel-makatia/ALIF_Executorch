@@ -1,0 +1,8 @@
+si swd
+speed 4000
+device M55_HE
+r
+h
+regs
+mem32 0xE000ED28 4
+exit

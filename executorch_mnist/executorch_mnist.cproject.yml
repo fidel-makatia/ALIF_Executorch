@@ -1,0 +1,69 @@
+project:
+  groups:
+    - group: App
+      files:
+        - file: main_npu.cpp
+    - group: EthosU_Driver
+      files:
+        - file: executorch/include/executorch/backends/arm/third-party/ethos-u-core-driver/src/ethosu_driver.c
+        - file: executorch/include/executorch/backends/arm/third-party/ethos-u-core-driver/src/ethosu_device_u55_u65.c
+        - file: executorch/include/executorch/backends/arm/third-party/ethos-u-core-driver/src/ethosu_pmu.c
+    # Trace and RTT commented out for minimal LED test
+    # - group: Trace
+    #   files:
+    #     - file: ../libs/common_app_utils/logging/uart_tracelib.c
+    #     - file: ../libs/common_app_utils/logging/retarget.c
+    #     - file: ../libs/common_app_utils/fault_handler/fault_handler.c
+    # - group: RTT
+    #   files:
+    #     - file: ../libs/SEGGER_RTT_V796h/RTT/SEGGER_RTT.c
+    #     - file: ../libs/SEGGER_RTT_V796h/RTT/SEGGER_RTT_printf.c
+
+  add-path:
+    - .
+    - executorch_npu/include
+    - executorch/include
+    - executorch/include/executorch/backends/arm/third-party/ethos-u-core-driver/include
+    - executorch/include/executorch/backends/arm/third-party/ethos-u-core-driver/src
+    - ../libs/common_app_utils/logging
+    - ../libs/common_app_utils/fault_handler
+    - ../libs/SEGGER_RTT_V796h/RTT
+    - ../libs/SEGGER_RTT_V796h/Config
+
+  misc:
+    - C:
+        - -Wno-unused-parameter
+        - -Wno-sign-compare
+        - -DETHOSU_ARCH=u55
+        - -DETHOSU55
+        - -DETHOSU_LOG_SEVERITY=ETHOSU_LOG_WARN
+        - -DET_MINIMAL=1
+    - CPP:
+        - -std=c++17
+        - -fno-exceptions
+        - -fno-rtti
+        - -Wno-unused-parameter
+        - -DETHOSU_ARCH=u55
+        - -DETHOSU55
+        - -DETHOSU_LOG_SEVERITY=ETHOSU_LOG_WARN
+        - -DET_MINIMAL=1
+    # ExecuTorch libraries - whole-archive only for core (no static constructors)
+    - Link:
+        - -Wl,--whole-archive
+        - $SolutionDir()$/executorch_mnist/executorch_npu/lib/libexecutorch_core.a
+        - $SolutionDir()$/executorch_mnist/executorch_npu/lib/libflatccrt.a
+        - -Wl,--no-whole-archive
+        - $SolutionDir()$/executorch_mnist/executorch_npu/lib/libexecutorch_delegate_ethos_u.a
+        - $SolutionDir()$/executorch_mnist/executorch_npu/lib/libexecutorch.a
+
+  output:
+    base-name: $Project$
+    type:
+      - elf
+      - bin
+
+  layers:
+    - layer: ../device/ensemble/alif-ensemble.clayer.yml
+
+  packs:
+    - pack: AlifSemiconductor::Ensemble

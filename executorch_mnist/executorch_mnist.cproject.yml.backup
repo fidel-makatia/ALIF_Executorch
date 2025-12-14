@@ -1,0 +1,49 @@
+project:
+  groups:
+    - group: App
+      files:
+        - file: main.c
+        - file: executorch_runner.cpp
+    - group: Trace
+      files:
+        - file: ../libs/common_app_utils/logging/uart_tracelib.c
+        - file: ../libs/common_app_utils/logging/retarget.c
+        - file: ../libs/common_app_utils/fault_handler/fault_handler.c
+
+  add-path:
+    - .
+    - executorch/include
+    - ../libs/common_app_utils/logging
+    - ../libs/common_app_utils/fault_handler
+
+  misc:
+    - C:
+        - -Wno-unused-parameter
+    - CPP:
+        - -std=c++17
+        - -fno-exceptions
+        - -fno-rtti
+        - -Wno-unused-parameter
+    - Link:
+        - -L/Users/fidelmakatia/alif-e8-mnist-npu/alif_project/executorch_mnist/executorch/lib
+        - -Wl,--whole-archive
+        - -lexecutorch
+        - -lexecutorch_core
+        - -lportable_ops_lib
+        - -lportable_kernels
+        - -lquantized_ops_lib
+        - -lquantized_kernels
+        - -lkernels_util_all_deps
+        - -Wl,--no-whole-archive
+
+  output:
+    base-name: $Project$
+    type:
+      - elf
+      - bin
+
+  layers:
+    - layer: ../device/ensemble/alif-ensemble.clayer.yml
+
+  packs:
+    - pack: AlifSemiconductor::Ensemble

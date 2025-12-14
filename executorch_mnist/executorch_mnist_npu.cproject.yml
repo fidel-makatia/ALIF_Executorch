@@ -1,0 +1,59 @@
+project:
+  groups:
+    - group: App
+      files:
+        - file: main_npu.cpp
+    - group: EthosU_Driver
+      files:
+        - file: executorch/include/executorch/backends/arm/third-party/ethos-u-core-driver/src/ethosu_driver.c
+        - file: executorch/include/executorch/backends/arm/third-party/ethos-u-core-driver/src/ethosu_device_u55_u65.c
+        - file: executorch/include/executorch/backends/arm/third-party/ethos-u-core-driver/src/ethosu_pmu.c
+    - group: Trace
+      files:
+        - file: ../libs/common_app_utils/logging/uart_tracelib.c
+        - file: ../libs/common_app_utils/logging/retarget.c
+        - file: ../libs/common_app_utils/fault_handler/fault_handler.c
+
+  add-path:
+    - .
+    - executorch_npu/include
+    - executorch/include/executorch/backends/arm/third-party/ethos-u-core-driver/include
+    - executorch/include/executorch/backends/arm/third-party/ethos-u-core-driver/src
+    - ../libs/common_app_utils/logging
+    - ../libs/common_app_utils/fault_handler
+
+  defines:
+    - ETHOSU_ARCH=u55
+    - ETHOSU55
+    - ETHOSU_LOG_SEVERITY=ETHOSU_LOG_WARN
+    - ET_MINIMAL=1
+
+  misc:
+    - C:
+        - -Wno-unused-parameter
+        - -Wno-sign-compare
+    - CPP:
+        - -std=c++17
+        - -fno-exceptions
+        - -fno-rtti
+        - -Wno-unused-parameter
+    - Link:
+        - -L./executorch_npu/lib
+        - -Wl,--whole-archive
+        - -lexecutorch_delegate_ethos_u
+        - -lexecutorch
+        - -lexecutorch_core
+        - -lflatccrt
+        - -Wl,--no-whole-archive
+
+  output:
+    base-name: $Project$
+    type:
+      - elf
+      - bin
+
+  layers:
+    - layer: ../device/ensemble/alif-ensemble.clayer.yml
+
+  packs:
+    - pack: AlifSemiconductor::Ensemble

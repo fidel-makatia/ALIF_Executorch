@@ -1,0 +1,9 @@
+si swd
+speed 4000
+device M55_HE
+r
+h
+loadbin /Users/fidelmakatia/Downloads/alif_vscode-template-e8/out/hello/E7-HE/debug/hello.bin, 0x80000000
+r
+g
+exit
